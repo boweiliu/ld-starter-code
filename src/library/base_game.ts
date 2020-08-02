@@ -58,6 +58,9 @@ export class BaseGame<TResources extends AllResourcesType = {}> {
 
   coroutineManager: CoroutineManager;
 
+  readonly tileWidth: number;
+  readonly tileHeight: number;
+
   constructor(props: GameArgs) {
     GameReference = this;
 
@@ -65,7 +68,9 @@ export class BaseGame<TResources extends AllResourcesType = {}> {
     this.state = {
       ...(new BaseGameState()),
       ...props.state,
-    }
+    };
+    this.tileWidth = props.tileWidth;
+    this.tileHeight = props.tileHeight;
 
     const view = document.getElementById('canvas');
 

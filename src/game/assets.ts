@@ -14,15 +14,15 @@ export type AssetType =
 export type AssetName = keyof typeof AssetsToLoad
 export type AssetPath = 
   | "map.json"
-  | "player.png"
+  | "player_sheet.png"
   | "tileset.png"
 
 
 
 export const AssetsToLoad = {
-  "map"    : { type: "TileMap"     as const, path: "map.json"    },
-  "player" : { type: "Image"       as const, path: "player.png"  },
-  "tileset": { type: "Image"       as const, path: "tileset.png" },
+  "map"         : { type: "TileMap"     as const, path: "map.json"         },
+  "player"      : { type: "SpriteSheet" as const, path: "player_sheet.png" },
+  "tileset"     : { type: "Image"       as const, path: "tileset.png"      },
 };
 
 export const Assets = new TypesafeLoader(AssetsToLoad);

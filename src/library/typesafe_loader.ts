@@ -2,27 +2,28 @@ import { Loader, Texture } from 'pixi.js'
 import { AssetsToLoad } from '../game/assets';
 import { TilemapData } from './tilemap/tilemap_data';
 import { TiledJSON } from './tilemap/tilemap_types';
+import { Spritesheet } from './spritesheet';
 
 type AnimationResource = {
-  type : "Animation";
+  type: "Animation";
   paths: string[];
 };
 
 type NormalResource = {
-  type: "Image" | "Audio" | "TileMap" | "TileWorld" | "Spritesheet";
+  type: "Image" | "Audio" | "TileMap" | "TileWorld" | "SpriteSheet";
   path: string;
 };
 
 type IndividualResourceObj = AnimationResource | NormalResource;
 
 type ResourceReturn<T extends string> =
-  T extends "Image"       ? Texture :
-  T extends "Audio"       ? HTMLAudioElement :
-  T extends "TileMap"     ? TiledJSON :
-  T extends "TileWorld"   ? object :
-  T extends "Spritesheet" ? unknown :
-  T extends "Animation"   ? Texture[] :
-  never
+  T extends "Image" ? Texture :
+  T extends "Audio" ? HTMLAudioElement :
+  T extends "TileMap" ? TiledJSON :
+  T extends "TileWorld" ? object :
+  T extends "SpriteSheet" ? Spritesheet :
+  T extends "Animation" ? Texture[] :
+  unknown
 
 export type AllResourcesType = { [key: string]: IndividualResourceObj; };
 
@@ -69,9 +70,9 @@ export class TypesafeLoader<Resources extends AllResourcesType> {
       const pathToTilemap = resource.substring(0, resource.lastIndexOf("/"))
 
       if (AssetsToLoad[castedResource].type === "TileMap") {
-        const tilemapData = new TilemapData({ 
-          data: this.getResource(castedResource) as TiledJSON, 
-          pathToTilemap, 
+        const tilemapData = new TilemapData({
+          data: this.getResource(castedResource) as TiledJSON,
+          pathToTilemap,
         });
 
         allTilemapDependencyPaths = allTilemapDependencyPaths.concat(
@@ -98,8 +99,14 @@ export class TypesafeLoader<Resources extends AllResourcesType> {
       return resource.paths.map(path => this.loader.resources[path].texture) as any;
     } else if (resource.type === "Image") {
       return this.loader.resources[resource.path].texture as any;
-    } else if (resource.type === "Spritesheet") {
-      throw new Error("Unhandled");
+    } else if (resource.type === "SpriteSheet") {
+      console.log(
+
+        this.loader.resources[resource.path].texture,
+      )
+      return new Spritesheet(
+        this.loader.resources[resource.path].texture.baseTexture,
+      ) as any;
     } else if (resource.type === "TileMap") {
       return this.loader.resources[resource.path].data;
     } else if (resource.type === "TileWorld") {

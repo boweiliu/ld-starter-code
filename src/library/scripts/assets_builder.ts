@@ -10,7 +10,7 @@ const assetFilePath = path.join(configDirectory, config.assets.compiledAssetsFil
 
 function walkDir(dir: string, callback: (path: string) => void) {
   fs.readdirSync(dir).forEach((f: string) => {
-    const dirPath     = path.join(dir, f);
+    const dirPath = path.join(dir, f);
     const isDirectory = fs.statSync(dirPath).isDirectory();
 
     isDirectory ? walkDir(dirPath, callback) : callback(path.join(dir, f));
@@ -107,8 +107,8 @@ export type AssetType =
 
 export type AssetName = keyof typeof AssetsToLoad
 export type AssetPath = 
-${ allKeys.map(key => `  | "${ key }"\n`).join("") }
-${ allKeys.length === 0 ? "  | void\n" : "" }
+${ allKeys.map(key => `  | "${key}"\n`).join("")}
+${ allKeys.length === 0 ? "  | void\n" : ""}
 
 export const AssetsToLoad = {
 `
@@ -125,10 +125,18 @@ export const AssetsToLoad = {
   const longestAssetType = "'TileWorld'".length;
 
   for (const file of normalFiles) {
+    let fileNameWithoutExtension = file.slice(0, file.lastIndexOf("."));
     let resourceType = ""
 
     if (file.endsWith(".png") || file.endsWith(".gif")) {
-      resourceType = "Image";
+      const truncatedFilename = file.slice(0, -4);
+
+      if (truncatedFilename.endsWith("_sheet")) {
+        fileNameWithoutExtension = fileNameWithoutExtension.slice(0, -"_sheet".length);
+        resourceType = "SpriteSheet";
+      } else {
+        resourceType = "Image";
+      }
     } else if (file.endsWith(".json")) {
       if (isPathTiledTileMap(path.join(assetDirectory, file))) {
         resourceType = "TileMap";
@@ -141,9 +149,7 @@ export const AssetsToLoad = {
       resourceType = "Audio";
     }
 
-    const fileNameWithoutExtension = file.slice(0, file.lastIndexOf("."));
-
-    output += `  "${ Util.PadString(fileNameWithoutExtension, longestTruncatedFileLength, '"') }: { type: "${ Util.PadString(resourceType, longestAssetType, '"') } as const, path: "${ Util.PadString(file, longestFileLength, '"') } },\n`;
+    output += `  "${Util.PadString(fileNameWithoutExtension, longestTruncatedFileLength, '"')}: { type: "${Util.PadString(resourceType, longestAssetType, '"')} as const, path: "${Util.PadString(file, longestFileLength, '"')} },\n`;
   }
 
   if (Object.keys(animationBundles).length > 0) {
@@ -152,14 +158,14 @@ export const AssetsToLoad = {
     output += `\n`
 
     for (const animationName of Object.keys(animationBundles)) {
-      output += `  "${ animationName }": {\n`
+      output += `  "${animationName}": {\n`
       output += `    type: "Animation" as const,\n`;
       output += `    paths: [\n`;
 
       for (const frame of animationBundles[animationName]) {
         if (frame === undefined) { continue; }
 
-        output += `      "${ frame }",\n`;
+        output += `      "${frame}",\n`;
       }
 
       output += `    ],\n`;
@@ -175,13 +181,13 @@ export const AssetsToLoad = {
 }
 
 function writeAssetsFile() {
-  console.log(`[${ Util.FormatDate(new Date()) }] Recompiling...`);
+  console.log(`[${Util.FormatDate(new Date())}] Recompiling...`);
   fs.writeFileSync(assetFilePath, buildAssetsFile());
 }
 
 fs.watch(
-  assetDirectory, 
-  { recursive: true }, 
+  assetDirectory,
+  { recursive: true },
   Util.Debounce(() => {
     writeAssetsFile();
   })

@@ -6,6 +6,7 @@ import { C } from "./constants";
 import { TiledTilemap } from "../library/tilemap/tilemap";
 import { Rect } from "../library/geometry/rect";
 
+
 export class Game extends BaseGame<typeof AssetsToLoad> {
   public static Instance: Game;
 
@@ -13,8 +14,8 @@ export class Game extends BaseGame<typeof AssetsToLoad> {
     super({
       canvasWidth: C.CanvasWidth,
       canvasHeight: C.CanvasHeight,
-      tileWidth: 256,
-      tileHeight: 256,
+      tileWidth: C.TileWidth,
+      tileHeight: C.TileHeight,
       scale: 1,
       assets: Assets,
       debugFlags: DebugFlags,
