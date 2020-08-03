@@ -104,10 +104,15 @@ export class Hierarchy extends React.Component<HierarchyProps, {
   };
 
   renderLeaf(root: any) {
-    return (<div>
-      {this.props.selectedEntity === this.props.root ? <strong>{root.name}</strong> : root.name} (depth: { root.zIndex}) { root instanceof Entity && (
-        root.activeModes.includes(this.props.gameState.mode) ? "Active" : "Inactive"
-      )}
+    let active = true;
+    if (root instanceof Entity) {
+      active = root.activeModes.includes(this.props.gameState.mode);
+    }
+
+    return (<div style={{
+      color: active ? "white" : "gray",
+    }}>
+      {this.props.selectedEntity === this.props.root ? <strong>{root.name}</strong> : root.name} (depth: { root.zIndex})
     </div>)
   }
 

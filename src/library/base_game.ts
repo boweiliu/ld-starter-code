@@ -3,7 +3,7 @@ import { Entity } from "./entity";
 import { Debug } from "./debug";
 import { HashSet } from "./data_structures/hash";
 import { TypesafeLoader, AllResourcesType } from "./typesafe_loader";
-import { CreateGame as ReactMountGame } from "./react/react_root";
+import { CreateGame as ReactMountGame, originalConsoleLog } from "./react/react_root";
 import { Camera } from "./camera";
 import { DebugFlagsType } from "./react/debug_flag_buttons";
 import { CollisionHandler } from "./collision_handler";
@@ -60,6 +60,8 @@ export class BaseGame<TResources extends AllResourcesType = {}> {
 
   readonly tileWidth: number;
   readonly tileHeight: number;
+
+  windowFocused = true;
 
   constructor(props: GameArgs) {
     GameReference = this;
@@ -133,6 +135,18 @@ export class BaseGame<TResources extends AllResourcesType = {}> {
 
     this.stage.sprite.sortableChildren = true;
     this.fixedCameraStage.sprite.sortableChildren = true;
+
+    if (window.require) {
+      // We're in electron
+      window.require('electron').ipcRenderer.on('focus', (event, message) => {
+        this.windowFocused = true;
+      });
+
+      window.require('electron').ipcRenderer.on('blur', (event, message) => {
+        this.windowFocused = false;
+      });
+
+    }
   }
 
   /**
@@ -147,6 +161,10 @@ export class BaseGame<TResources extends AllResourcesType = {}> {
   };
 
   gameLoop() {
+    if (this.windowFocused) {
+      return;
+    }
+
     Debug.Clear();
 
     const { entities } = this.state;
@@ -211,5 +229,6 @@ export class BaseGame<TResources extends AllResourcesType = {}> {
     // let foo = Debug.GetDrawn();
 
     Debug.ResetDrawCount();
+
   };
 }

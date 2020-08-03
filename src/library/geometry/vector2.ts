@@ -123,6 +123,20 @@ export class Vector2 {
     });
   }
 
+  subtractX(x: number): Vector2 {
+    return new Vector2({
+      x: this.x - x,
+      y: this.y,
+    });
+  }
+
+  subtractY(y: number): Vector2 {
+    return new Vector2({
+      x: this.x,
+      y: this.y - y,
+    });
+  }
+
   clampY(low: number, high: number): Vector2 {
     let newY = this.y;
 

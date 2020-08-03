@@ -5,6 +5,11 @@ import { DebugFlags } from "./debug";
 import { C } from "./constants";
 import { TiledTilemap } from "../library/tilemap/tilemap";
 import { Rect } from "../library/geometry/rect";
+import { NineSlicePlane } from "pixi.js";
+import { Npc } from "./npc";
+import { GameMap } from "./game_map";
+import { Dialog } from "./dialog";
+import { Hud } from "./hud";
 
 
 export class Game extends BaseGame<typeof AssetsToLoad> {
@@ -21,33 +26,28 @@ export class Game extends BaseGame<typeof AssetsToLoad> {
       debugFlags: DebugFlags,
       state: {
         tick: 0,
-
+        map: undefined as any,
         player: undefined as any,
-      }
+        hud: undefined as any,
+      },
     });
 
     Game.Instance = this;
   }
 
   initialize() {
+    let x: Npc;
+
     this.stage.addChild(this.state.player = new Player());
-    const map = new TiledTilemap({
-      json: Assets.getResource("map"),
-      assets: Assets,
-      renderer: this.renderer,
-      pathToTilemap: "",
-      customObjects: [],
-    });
+    this.stage.addChild(x = new Npc());
 
-    const layers = map.loadLayersInRectCached(new Rect({
-      x: 0,
-      y: 0,
-      width: 640,
-      height: 640,
-    }));
+    x.x = 200;
+    x.y = 100;
 
-    for (const layer of layers) {
-      this.stage.addChild(layer.entity);
-    }
+    this.state.player.x = 300;
+    this.state.player.y = 100;
+
+    this.stage.addChild(this.state.map = new GameMap(this.state));
+    this.fixedCameraStage.addChild(this.state.hud = new Hud());
   }
 }

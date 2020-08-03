@@ -8,7 +8,6 @@ import { GameReference, FixedStageName, StageName, ParallaxStageName } from "./b
 import { CoroutineId, GameCoroutine } from "./coroutine_manager";
 import { IGameState, Mode } from "Library";
 import { HitInfo } from "./collision_handler";
-import { serialized } from "./serializer";
 
 export enum EntityType {
   NormalEntity,
@@ -49,27 +48,20 @@ export class Entity {
    */
   public sprite: AugmentedSprite;
 
-  public hitInfo: HitInfo = { hit: false, collisions: [], interactions: [] };
+  public hitInfo: HitInfo = { hit: false, collisions: [] };
 
   protected _collidable: boolean;
-  protected _interactable: boolean;
 
   constructor(props: {
     name: string;
     collidable?: boolean;
     texture?: Texture;
-    interactable?: boolean;
   }) {
     this.sprite = new AugmentedSprite(props.texture);
     this.name = props.name;
     this.sprite.entity = this;
 
     this._collidable = props.collidable ?? false;
-    this._interactable = props.interactable ?? false;
-
-    if (props.interactable && props.collidable) {
-      throw new Error("Cant be both interactable and collideable");
-    }
 
     this.startUpdating();
 
@@ -77,15 +69,23 @@ export class Entity {
     this.sprite.anchor.set(0);
   }
 
-  addChild(child: Entity, x: number | null = null, y: number | null = null) {
-    this.sprite.addChild(child.sprite);
+  addChild(child: Entity | PIXI.Sprite, x: number | null = null, y: number | null = null) {
+    if (child instanceof Entity) {
+      this.sprite.addChild(child.sprite);
+    } else {
+      this.sprite.addChild(child);
+    }
 
     if (x !== null) child.x = x;
     if (y !== null) child.y = y;
   }
 
-  removeChild(child: Entity) {
-    this.sprite.removeChild(child.sprite);
+  removeChild(child: Entity | PIXI.Sprite) {
+    if (child instanceof Entity) {
+      this.sprite.removeChild(child.sprite);
+    } else {
+      this.sprite.removeChild(child);
+    }
   }
 
   startCoroutine(name: string, coroutine: GameCoroutine): CoroutineId {
@@ -179,10 +179,6 @@ export class Entity {
 
   isCollideable(): boolean {
     return this._collidable;
-  }
-
-  isInteractable(): boolean {
-    return this._interactable;
   }
 
   dimensions(): Vector2 {

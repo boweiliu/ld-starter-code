@@ -100,10 +100,6 @@ export class TypesafeLoader<Resources extends AllResourcesType> {
     } else if (resource.type === "Image") {
       return this.loader.resources[resource.path].texture as any;
     } else if (resource.type === "SpriteSheet") {
-      console.log(
-
-        this.loader.resources[resource.path].texture,
-      )
       return new Spritesheet(
         this.loader.resources[resource.path].texture.baseTexture,
       ) as any;

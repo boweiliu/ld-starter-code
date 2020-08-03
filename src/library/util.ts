@@ -5,14 +5,14 @@ export const getUniqueID = () => {
 };
 
 export class Util {
-  static MinBy<T>(list: T[], fn: (T: T) => number): T | undefined {
-    let lowestT    : T | undefined = undefined;
-    let lowestValue: number | undefined = undefined;
+  static MinBy<T>(list: T[], fn: (T: T) => number): T | null {
+    let lowestT: T | null = null;
+    let lowestValue: number | null = null;
 
     for (const item of list) {
       const value = fn(item);
 
-      if (lowestValue === undefined || value < lowestValue) {
+      if (lowestValue === null || value < lowestValue) {
         lowestT = item;
         lowestValue = value;
       }
@@ -21,14 +21,30 @@ export class Util {
     return lowestT;
   }
 
-  static MaxBy<T>(list: T[], fn: (T: T) => number): T | undefined {
-    let highestT    : T | undefined = undefined;
-    let highestValue: number | undefined = undefined;
+  static MinByAndValue<T>(list: T[], fn: (T: T) => number): { obj: T, value: number } | null {
+    let lowestT: T | null = null;
+    let lowestValue: number | null = null;
 
     for (const item of list) {
       const value = fn(item);
 
-      if (highestValue === undefined || value > highestValue) {
+      if (lowestValue === null || value < lowestValue) {
+        lowestT = item;
+        lowestValue = value;
+      }
+    }
+
+    return lowestT === null || lowestValue === null ? null : { obj: lowestT, value: lowestValue };
+  }
+
+  static MaxBy<T>(list: T[], fn: (T: T) => number): T | null {
+    let highestT: T | null = null;
+    let highestValue: number | null = null;
+
+    for (const item of list) {
+      const value = fn(item);
+
+      if (highestValue === null || value > highestValue) {
         highestT = item;
         highestValue = value;
       }
@@ -48,7 +64,7 @@ export class Util {
   }
 
   public static ReplaceAll(
-    str   : string,
+    str: string,
     mapObj: { [key: string]: string }
   ): string {
     const re = new RegExp(Object.keys(mapObj).join('|'), 'gi')

@@ -74,11 +74,19 @@ export class GameReactWrapper extends React.Component<ReactWrapperProps, ReactWr
       );
     }
 
+    let active = true;
+    if (target instanceof Entity) {
+      active = target.activeModes.includes(this.props.game.state.mode);
+    }
+
     return (
       <div>
         <div style={{ fontWeight: 600, fontFamily: 'arial', paddingTop: '8px', paddingBottom: '8px', fontSize: '18px' }}>{target.name}</div>
         <div>
           x: {target.x}, y: {target.y}
+        </div>
+        <div>
+          {active ? "Active" : "Inactive"}
         </div>
         <div>
           xAbs: {target.positionAbsolute().x}, yAbs: {target.positionAbsolute().y}
@@ -95,7 +103,7 @@ export class GameReactWrapper extends React.Component<ReactWrapperProps, ReactWr
         {
           target instanceof TextEntity
             ? <div>text: {target.html}</div>
-            : <div>hi</div>
+            : <div></div>
         }
       </div>
     );
@@ -169,4 +177,46 @@ export const CreateGame = (game: BaseGame<any>, debugFlags: DebugFlagsType) => {
     </React.StrictMode>,
     document.getElementById('root')
   );
+
+  ReactDOM.render(
+    <React.StrictMode>
+      <Log />
+    </React.StrictMode>,
+    document.getElementById('log')
+  );
+}
+
+export const originalConsoleLog = console.log;
+const allLogs: any[][] = [];
+
+console.log = (...data: any[]) => {
+  allLogs.push(data);
+};
+
+export const Log: React.FC<{}> = (props: {}) => {
+  const [logs, setLogs] = React.useState<any[][]>([]);
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setLogs(allLogs.slice());
+    }, 400);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div>
+      {
+        logs.map(logItems => {
+          return (
+            <div>
+              {
+                logItems.map(log => <span>{JSON.stringify(log)}</span>)
+              }
+            </div>
+          );
+        })
+      }
+    </div>
+  )
 }

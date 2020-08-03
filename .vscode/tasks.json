@@ -11,7 +11,6 @@
       },
       "command": "ts-node --project ${workspaceFolder}/src/library/scripts/tsconfig.json ${workspaceFolder}/src/library/scripts/assets_builder.ts ${workspaceFolder}/src/game/config.json"
     },
-
     {
       "label": "Run Yarn",
       "type": "shell",
@@ -20,5 +19,38 @@
       },
       "command": "yarn start"
     },
+  ],
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Electron: Main",
+      "preLaunchTask": "webpack",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+      "program": "${workspaceFolder}/src/electron_starter.js",
+      "runtimeArgs": [
+        ".",
+        "--enable-logging",
+        "--remote-debugging-port=9223",
+      ]
+    },
+    {
+      "name": "Electron: Renderer",
+      "type": "chrome",
+      "request": "attach",
+      "port": 9223,
+      "webRoot": "${workspaceFolder}",
+      "urlFilter": "*localhost*",
+      "timeout": 30000
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Electron: All",
+      "configurations": [
+        "Electron: Main",
+        "Electron: Renderer"
+      ]
+    }
   ]
 }

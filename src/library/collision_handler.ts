@@ -12,7 +12,6 @@ export type HitInfo = {
   up?: boolean;
   down?: boolean;
   collisions: CollisionResultRect[];
-  interactions: CollisionResultRect[];
 };
 
 export class CollisionHandler {
@@ -47,7 +46,7 @@ export class CollisionHandler {
       cellSize: 4 * this._tileSize,
     });
 
-    const collideableEntities = entities.values().filter(x => x.isCollideable() || x.isInteractable());
+    const collideableEntities = entities.values().filter(x => x.isCollideable());
 
     for (const entity of collideableEntities) {
       const collisionRect = entity.collisionBounds().add(entity.positionAbsolute());
@@ -66,19 +65,15 @@ export class CollisionHandler {
     return grid;
   };
 
-  getHitsAt = (grid: CollisionGrid, bounds: Rect | RectGroup, entity: Entity): { hits: CollisionResultRect[]; interactions: CollisionResultRect[] } => {
+  getHitsAt = (grid: CollisionGrid, bounds: Rect | RectGroup, entity: Entity): { hits: CollisionResultRect[]; } => {
     const xHits =
       bounds instanceof Rect
         ? grid.getRectCollisions(bounds, entity)
         : grid.getRectGroupCollisions(bounds, entity);
 
-    const hits = xHits.filter(x => !x.otherEntity || (x.otherEntity && !x.otherEntity.isInteractable()));
-    const interactions = xHits.filter(x => (x.otherEntity && x.otherEntity.isInteractable()));
+    const hits = xHits.filter(x => !x.otherEntity || (x.otherEntity));
 
-    return {
-      hits,
-      interactions,
-    };
+    return { hits };
   }
 
   resolveCollisions = (props: {
@@ -91,7 +86,6 @@ export class CollisionHandler {
       const hitInfo: HitInfo = {
         hit: false,
         collisions: [],
-        interactions: [],
       };
 
       if (entity.velocity.x === 0 && entity.velocity.y === 0) { continue; }
@@ -108,7 +102,7 @@ export class CollisionHandler {
       delta = delta.add(xVelocity);
       updatedBounds = updatedBounds.add(xVelocity);
 
-      const { hits: xHits, interactions: xInteractions } = this.getHitsAt(grid, updatedBounds, entity);
+      const { hits: xHits, } = this.getHitsAt(grid, updatedBounds, entity);
 
       if (xHits.length > 0) {
         hitInfo.hit = true;
@@ -134,16 +128,12 @@ export class CollisionHandler {
         }
       }
 
-      if (xInteractions.length > 0) {
-        hitInfo.interactions = [...hitInfo.interactions, ...xInteractions];
-      }
-
       // resolve y-axis
 
       delta = delta.add(yVelocity);
       updatedBounds = updatedBounds.add(yVelocity);
 
-      const { hits: yHits, interactions: yInteractions } = this.getHitsAt(grid, updatedBounds, entity);
+      const { hits: yHits, } = this.getHitsAt(grid, updatedBounds, entity);
 
       if (yHits.length > 0) {
         hitInfo.hit = true;
@@ -167,10 +157,6 @@ export class CollisionHandler {
             break;
           }
         }
-      }
-
-      if (yInteractions.length > 0) {
-        hitInfo.interactions = [...hitInfo.interactions, ...yInteractions];
       }
 
       entity.hitInfo = hitInfo;

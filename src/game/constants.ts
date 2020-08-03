@@ -1,4 +1,4 @@
-import { Vector2 } from "../library/geometry/vector2";
+import { TextStyle } from "pixi.js";
 
 export class C {
   public static CanvasWidth = 800;
@@ -7,5 +7,6 @@ export class C {
   public static TileWidth = 32;
   public static TileHeight = 32;
 
-  public static InteractionDistance = 600;
+  public static InteractionDistance = 100;
+  static TEXT_STYLE = new TextStyle({ fontFamily: "FreePixel", fontSize: 18, fill: "white" });
 }
