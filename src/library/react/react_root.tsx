@@ -189,9 +189,9 @@ export const CreateGame = (game: BaseGame<any>, debugFlags: DebugFlagsType) => {
 export const originalConsoleLog = console.log;
 const allLogs: any[][] = [];
 
-console.log = (...data: any[]) => {
-  allLogs.push(data);
-};
+// console.log = (...data: any[]) => {
+//   allLogs.push(data);
+// };
 
 export const Log: React.FC<{}> = (props: {}) => {
   const [logs, setLogs] = React.useState<any[][]>([]);

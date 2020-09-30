@@ -20,6 +20,18 @@
         // devtools://devtools/bundled/main/main.js
         // "webpack:///src/*": "${webRoot}/*"
       }
+    },
+    {
+      "name": "Debug Renderer Process",
+      "type": "chrome",
+      "request": "launch",
+      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
+      "runtimeArgs": [
+        "http://localhost:3000",
+        "--remote-debugging-port=9222"
+      ],
+      "sourceMaps": true,
+      "webRoot": "${workspaceRoot}"
     }
   ]
 }

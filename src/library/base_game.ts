@@ -161,11 +161,11 @@ export class BaseGame<TResources extends AllResourcesType = {}> {
   };
 
   gameLoop() {
-    if (this.windowFocused) {
+    Debug.Clear();
+
+    if (!this.windowFocused) {
       return;
     }
-
-    Debug.Clear();
 
     const { entities } = this.state;
 

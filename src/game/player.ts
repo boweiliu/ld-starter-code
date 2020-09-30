@@ -4,7 +4,7 @@ import { IGameState } from "Library";
 import { Vector2 } from "../library/geometry/vector2";
 import { Rect } from "../library/geometry/rect";
 import { C } from "./constants";
-import { IsInteractor, Interactor, GetInteractors } from "./interactor";
+import { Interactor, GetInteractors } from "./interactor";
 import { Util } from "../library/util";
 
 export class Player extends Entity {
