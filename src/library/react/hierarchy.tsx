@@ -4,7 +4,6 @@ import { Container, Graphics } from 'pixi.js';
 import { Entity } from '../entity';
 import { Debug } from '../debug';
 import { IGameState } from 'Library';
-import { DebugFlags } from '../../game/debug';
 
 type HierarchyProps = {
   root: Entity | Container;
