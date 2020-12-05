@@ -1,15 +1,14 @@
 import { Texture, Rectangle, BaseTexture } from "pixi.js";
-import { Game } from "../game/game";
 
 export class Spritesheet extends Texture {
   private _tileWidth: number;
   private _tileHeight: number;
 
-  constructor(texture: BaseTexture) {
+  constructor(texture: BaseTexture, tileWidth: number, tileHeight: number) {
     super(texture);
 
-    this._tileWidth = Game.Instance.tileWidth
-    this._tileHeight = Game.Instance.tileHeight
+    this._tileWidth = tileWidth;
+    this._tileHeight = tileHeight;
 
     this.setTile(0, 0);
   }

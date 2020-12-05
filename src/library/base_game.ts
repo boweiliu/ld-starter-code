@@ -63,6 +63,11 @@ export class BaseGame<TResources extends AllResourcesType = {}> {
 
   windowFocused = true;
 
+  /**
+   * Boolean flag to indicate whether the game has already automounted itself to the react root.
+   */
+  wasMountedToReact = false;
+
   constructor(props: GameArgs) {
     GameReference = this;
 
@@ -118,6 +123,9 @@ export class BaseGame<TResources extends AllResourcesType = {}> {
     this.assets.onLoadComplete(() => this.startGameLoop());
     this.assets.onLoadComplete(() => this.initialize());
 
+    this.assets.tileWidth = props.tileWidth;
+    this.assets.tileHeight = props.tileHeight;
+
     this.renderer = this.app.renderer;
 
     this.camera = new Camera({
@@ -130,8 +138,6 @@ export class BaseGame<TResources extends AllResourcesType = {}> {
     });
 
     this.state.camera = this.camera;
-
-    ReactMountGame(this, props.debugFlags);
 
     this.stage.sprite.sortableChildren = true;
     this.fixedCameraStage.sprite.sortableChildren = true;
@@ -147,6 +153,27 @@ export class BaseGame<TResources extends AllResourcesType = {}> {
       });
 
     }
+  }
+
+  /**
+   * After constructing the game instance, need to call this function to mount it into the react root,
+   * and also (if desired) mount in the debug hierarchy and debug log view.
+   * 
+   * Otherwise, to mount this Pixi app into a custom react component, use something like the following snippet:
+   * ```
+   *  const container = useRef<HTMLDivElement>(null);
+   *
+   *  useEffect(() => {
+   *    container.current!.appendChild(this.app.view)
+   *  }, []);
+   * ```
+   * @param debugFlags
+   */
+  mountToReact(debugFlags: DebugFlagsType) {
+    if (!this.wasMountedToReact) {
+      ReactMountGame(this, debugFlags);
+    }
+    this.wasMountedToReact = true;
   }
 
   /**

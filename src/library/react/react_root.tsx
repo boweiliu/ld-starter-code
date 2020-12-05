@@ -21,7 +21,6 @@ type ReactWrapperState = {
 };
 
 export class GameReactWrapper extends React.Component<ReactWrapperProps, ReactWrapperState> {
-  static Instance: GameReactWrapper;
   mounted = false;
 
   constructor(props: ReactWrapperProps) {
@@ -37,7 +36,6 @@ export class GameReactWrapper extends React.Component<ReactWrapperProps, ReactWr
 
   componentDidMount() {
     this.mounted = true;
-    GameReactWrapper.Instance = this;
   }
 
   componentWillUnmount() {

@@ -36,6 +36,9 @@ export class TypesafeLoader<Resources extends AllResourcesType> {
   loadComplete: boolean;
   loadCompleteCallbacks: (() => void)[];
 
+  public tileWidth!: number;
+  public tileHeight!: number;
+
   constructor(resourceNames: Resources) {
     this.loadCompleteCallbacks = [];
     this.loader = new Loader();
@@ -102,6 +105,8 @@ export class TypesafeLoader<Resources extends AllResourcesType> {
     } else if (resource.type === "SpriteSheet") {
       return new Spritesheet(
         this.loader.resources[resource.path].texture.baseTexture,
+        this.tileWidth,
+        this.tileHeight
       ) as any;
     } else if (resource.type === "TileMap") {
       return this.loader.resources[resource.path].data;

@@ -13,8 +13,6 @@ import { Hud } from "./hud";
 
 
 export class Game extends BaseGame<typeof AssetsToLoad> {
-  public static Instance: Game;
-
   constructor() {
     super({
       canvasWidth: C.CanvasWidth,
@@ -31,8 +29,6 @@ export class Game extends BaseGame<typeof AssetsToLoad> {
         hud: undefined as any,
       },
     });
-
-    Game.Instance = this;
   }
 
   initialize() {
