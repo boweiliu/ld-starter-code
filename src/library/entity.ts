@@ -276,8 +276,8 @@ export class Entity<MyModeList extends ModeList = ModeList> {
 
   public set texture(value: Texture) { this.sprite.texture = value; }
 
-  public set mask(value: Container | MaskData) { this.sprite.mask = value; }
-  public get mask(): Container | MaskData { return this.sprite.mask; }
+  public set mask(value: Container | MaskData | null) { this.sprite.mask = value; }
+  public get mask(): Container | MaskData | null { return this.sprite.mask; }
 
   public get scale(): Vector2 { return new Vector2({ x: this.sprite.scale.x, y: this.sprite.scale.y }); }
   public set scale(value: Vector2) {

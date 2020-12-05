@@ -151,11 +151,11 @@ export class BaseGame<
 
     if (window.require) {
       // We're in electron
-      window.require('electron').ipcRenderer.on('focus', (event, message) => {
+      window.require('electron').ipcRenderer.on('focus', (event: any, message: any) => {
         this.windowFocused = true;
       });
 
-      window.require('electron').ipcRenderer.on('blur', (event, message) => {
+      window.require('electron').ipcRenderer.on('blur', (event: any, message: any) => {
         this.windowFocused = false;
       });
 
