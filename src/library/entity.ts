@@ -6,7 +6,7 @@ import { RectGroup } from "./geometry/rect_group";
 import { BaseGameState } from "./base_state";
 import { GameReference, FixedStageName, StageName, ParallaxStageName } from "./base_game";
 import { CoroutineId, GameCoroutine } from "./coroutine_manager";
-import { IGameState, Mode } from "Library";
+import { IGameState, Mode, ModeList } from "Library";
 import { HitInfo } from "./collision_handler";
 
 export enum EntityType {
@@ -20,7 +20,7 @@ export enum EntityType {
 }
 
 export class AugmentedSprite extends Sprite {
-  entity!: Entity;
+  entity!: Entity<any>;
 }
 
 
@@ -31,13 +31,13 @@ export class AugmentedSprite extends Sprite {
 // }
 
 // TODO: probably make less of these methods abstract?
-export class Entity {
+export class Entity<MyModeList extends ModeList = ModeList> {
   /**
    * This is the name that is displayed in the hierarchy.
    */
   public name: string;
 
-  public activeModes: Mode[] = ["Normal"];
+  public activeModes: (keyof MyModeList)[] = ["Normal"];
 
   public id = getUniqueID();
 
@@ -69,7 +69,7 @@ export class Entity {
     this.sprite.anchor.set(0);
   }
 
-  addChild(child: Entity | PIXI.Sprite, x: number | null = null, y: number | null = null) {
+  addChild(child: Entity<any> | PIXI.Sprite, x: number | null = null, y: number | null = null) {
     if (child instanceof Entity) {
       this.sprite.addChild(child.sprite);
     } else {
@@ -210,7 +210,7 @@ export class Entity {
   private queuedUpdates: ((state: IGameState) => void)[] = [];
   private firstUpdateCalled = false;
 
-  baseUpdate(state: IGameState): void {
+  baseUpdate(state: IGameState<any>): void {
     if (this.shouldUpdate(state)) {
       for (const cb of this.queuedUpdates) {
         cb(state);

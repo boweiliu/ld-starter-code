@@ -26,13 +26,13 @@ export type CoroutineId = number;
 export class CoroutineManager {
   private _lastCoroutineId: CoroutineId = -1;
   private _activeCoroutines: { [key: number]: ActiveCoroutine } = [];
-  private _game: BaseGame<any>;
+  private _game: BaseGame<any, any, any>;
 
-  constructor(game: BaseGame<any>) {
+  constructor(game: BaseGame<any, any, any>) {
     this._game = game;
   }
 
-  startCoroutine(name: string, co: GameCoroutine, owner: Entity | BaseGame<any>): CoroutineId {
+  startCoroutine(name: string, co: GameCoroutine, owner: Entity<any> | BaseGame<any>): CoroutineId {
     for (const activeCo of Object.values(this._activeCoroutines)) {
       if (activeCo.name === name) {
         if (IS_DEBUG) {
@@ -57,7 +57,7 @@ export class CoroutineManager {
     delete this._activeCoroutines[id];
   }
 
-  public updateCoroutines(state: IGameState): void {
+  public updateCoroutines(state: IGameState<any>): void {
     for (const key of Object.keys(this._activeCoroutines)) {
       const co = this._activeCoroutines[Number(key)];
 

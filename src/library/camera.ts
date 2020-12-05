@@ -21,7 +21,7 @@ export class Camera {
 
   constructor(props: {
     stage: Entity;
-    state: IGameState;
+    state: IGameState<any>;
     canvasWidth: number;
     canvasHeight: number;
     scale: number;
@@ -119,7 +119,7 @@ export class Camera {
     return desiredPosition;
   };
 
-  update = (state: IGameState) => {
+  update = (state: IGameState<any>) => {
     if (Debug.DebugMode) {
       return;
     }

@@ -2,15 +2,15 @@ import { Text, Sprite, Texture, TextMetrics } from "pixi.js";
 import { Entity } from "../library/entity";
 import { C } from "./constants";
 import { IGameState } from "Library";
-import { Game } from "./game";
+import { Game, MyModeList } from "./game";
 import { Mode } from "Library";
 
-export class Dialog extends Entity {
+export class Dialog extends Entity<MyModeList> {
   currentText = ""
   dialog: [Entity, string][];
   text: Text;
   box: Entity;
-  activeModes: Mode[] = ["Dialog"];
+  activeModes: (keyof MyModeList)[] = ["Dialog"];
 
   constructor(initialDialog: [Entity, string][]) {
     super({
@@ -43,7 +43,7 @@ export class Dialog extends Entity {
     this.box.height = textMetrics.height + 8 + 8;
   }
 
-  public static BeginDialog(state: IGameState, string: [Entity, string][]): void {
+  public static BeginDialog(state: IGameState<MyModeList>, string: [Entity, string][]): void {
     const dialog = new Dialog(string);
 
     state.mode = "Dialog";

@@ -11,16 +11,16 @@ declare module "Library" {
   type CollisionGrid = import("./collision_grid").CollisionGrid;
   type Camera = import("./camera").Camera;
 
-  export interface IGameState {
+  export interface IGameState<MyModeList extends ModeList = ModeList> {
     camera: Camera;
     keys: KeyboardState;
     lastCollisionGrid: CollisionGrid;
-    entities: HashSet<Entity>;
-    spriteToEntity: { [key: number]: Entity };
+    entities: HashSet<Entity<MyModeList>>;
+    spriteToEntity: { [key: number]: Entity<MyModeList> };
     renderer: Renderer;
     tick: number;
-    toBeDestroyed: Entity[];
-    stage: Entity;
-    mode: Mode;
+    toBeDestroyed: Entity<MyModeList>[];
+    stage: Entity<MyModeList>;
+    mode: keyof MyModeList;
   }
 }

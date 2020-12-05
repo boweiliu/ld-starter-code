@@ -10,9 +10,20 @@ import { Npc } from "./npc";
 import { GameMap } from "./game_map";
 import { Dialog } from "./dialog";
 import { Hud } from "./hud";
+import { IGameState, ModeList } from "Library";
 
+interface MyGameState extends IGameState {
+  player: Player;
+  hud: Hud;
+  map: GameMap;
+}
 
-export class Game extends BaseGame<typeof AssetsToLoad> {
+export interface MyModeList extends ModeList {
+  Dialog: never;
+  Menu: never;
+}
+
+export class Game extends BaseGame<typeof AssetsToLoad, MyModeList, MyGameState> {
   constructor() {
     super({
       canvasWidth: C.CanvasWidth,
@@ -29,6 +40,8 @@ export class Game extends BaseGame<typeof AssetsToLoad> {
         hud: undefined as any,
       },
     });
+    
+    this.mountToReact(DebugFlags);
   }
 
   initialize() {

@@ -165,7 +165,7 @@ export class GameReactWrapper extends React.Component<ReactWrapperProps, ReactWr
   }
 }
 
-export const CreateGame = (game: BaseGame<any>, debugFlags: DebugFlagsType) => {
+export const CreateGame = (game: BaseGame<any, any, any>, debugFlags: DebugFlagsType) => {
   ReactDOM.render(
     <React.StrictMode>
       <GameReactWrapper

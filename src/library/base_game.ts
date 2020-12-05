@@ -9,19 +9,22 @@ import { DebugFlagsType } from "./react/debug_flag_buttons";
 import { CollisionHandler } from "./collision_handler";
 import { Rect } from "./geometry/rect";
 import { CoroutineManager } from "./coroutine_manager";
-import { IGameState } from 'Library';
+import { IGameState, ModeList } from 'Library';
 import { BaseGameState } from "./base_state";
 
-export let GameReference: BaseGame<any>;
+export let GameReference: BaseGame<any, any, any>;
 
-export type GameArgs = {
+export type GameArgs<
+  MyModeList extends ModeList = ModeList,
+  MyGameState extends IGameState<MyModeList> = IGameState<MyModeList>
+  > = {
   scale: number;
   canvasWidth: number;
   canvasHeight: number;
   tileHeight: number;
   tileWidth: number;
   debugFlags: DebugFlagsType;
-  state: Omit<IGameState, keyof BaseGameState>;
+  state: Omit<MyGameState, keyof BaseGameState>;
   assets: TypesafeLoader<any>;
 };
 
@@ -29,10 +32,14 @@ export const StageName = "Stage";
 export const FixedStageName = "FixedStage";
 export const ParallaxStageName = "ParallaxStage";
 
-export class BaseGame<TResources extends AllResourcesType = {}> {
+export class BaseGame<
+  TResources extends AllResourcesType = {},
+  MyModeList extends ModeList = ModeList,
+  MyGameState extends IGameState<MyModeList> = IGameState<MyModeList>
+  > {
   app: PIXI.Application;
 
-  state: IGameState;
+  state: MyGameState;
 
   /** 
    * The root of the display hierarchy for the game. Everything that exists in
@@ -68,14 +75,14 @@ export class BaseGame<TResources extends AllResourcesType = {}> {
    */
   wasMountedToReact = false;
 
-  constructor(props: GameArgs) {
+  constructor(props: GameArgs<MyModeList, MyGameState>) {
     GameReference = this;
 
     this.coroutineManager = new CoroutineManager(this);
-    this.state = {
+    this.state = ({
       ...(new BaseGameState()),
       ...props.state,
-    };
+    } as MyGameState);
     this.tileWidth = props.tileWidth;
     this.tileHeight = props.tileHeight;
 
